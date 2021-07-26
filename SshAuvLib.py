@@ -23,7 +23,7 @@ class SshAuvSession(object):
         for i in range(len(self._ip)):
             try:
                 self._clients[i].connect(self._ip[i], self._port, self._user, self._password)
-            except paramiko.SSHException:
+            except Exception:
                 return i+1
         return 0
 

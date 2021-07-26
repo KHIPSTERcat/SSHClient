@@ -88,7 +88,7 @@ class Ui_MainWindow(object):
     def add_functions(self):
         self.connectButton.clicked.connect(
             lambda: self.connect_session(self.ipText.text(), self.loginText.text(), self.passwordText.text(),
-                                         self.portText.text()))
+                                         self.portText.text(), self.W))
         self.syncSelectButton.clicked.connect(
             lambda: self.select_file_transport(self.apparatusTree.currentItem().text()))
         self.syncAllButton.clicked.connect(lambda: self.all_file_transport())
@@ -97,13 +97,20 @@ class Ui_MainWindow(object):
             lambda: self.double_click(self.operatorTree.currentItem().text(), self.W))
         self.backButton.clicked.connect(self.back)
 
-    def connect_session(self, host, username, secret, port):
+    def connect_session(self, host, username, secret, port, W):
         self.SSHSession = SshAuvLib.SshAuvSession(host.split(' '), username, secret, int(port))
-        self.SSHSession.connection()
-        self.SSHSession.open_sftp_sessions()
         self.SSHSession.change_work_path('C:\\Users\\kosta\\Downloads\\TestClient')
-        self.SSHSession.change_sftp_work_path('C:\\Users\\kosta\\Downloads\\TestServer')
-        self._update_tree()
+        if self.SSHSession.connection() == 0:
+            self.SSHSession.open_sftp_sessions()
+            self.SSHSession.change_sftp_work_path('C:\\Users\\kosta\\Downloads\\TestServer')
+            self._update_tree()
+        else:
+            self._update_tree()
+            msgbox = QtWidgets.QMessageBox(W)
+            msgbox.setWindowTitle('ERROR!!!!1111!!!!11!')
+            msgbox.setIcon(QtWidgets.QMessageBox.Critical)
+            msgbox.setText('Ошибка подключения!')
+            msgbox.show()
 
     def select_file_transport(self, file):
         self.SSHSession.download_and_extract_files([file])
