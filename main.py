@@ -3,7 +3,7 @@ import SshAuvLib
 
 host = ['localhost']
 username = 'chesh'
-secret = 'Ilia211000MICROSOFT'
+secret = input()
 port = 22
 
 # client = paramiko.SSHClient()
@@ -17,7 +17,9 @@ port = 22
 
 session = SshAuvLib.SshAuvSession(host, username, secret, port)
 
-session.connection()
+if session.connection() != 0:
+    print ('Lol')
+    exit(1)
 
 session.open_sftp_sessions()
 
